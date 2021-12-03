@@ -10,7 +10,7 @@ async def echo(websocket, path):
     print("A client just connected")
     async for message in websocket:
         print(f"Received message from client: {message}")
-        await websocket.send(f"Pong: {message}")
+        # await websocket.send(f"Pong: {message}")
 
 start_server = websockets.serve(echo, "localhost", PORT)
 
