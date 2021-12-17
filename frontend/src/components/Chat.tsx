@@ -1,32 +1,33 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { SocketContext } from "../socket"
 
-const Chat = (chatObj: any) => {
-  let socket = chatObj.socket;
-
+const Chat = (chatObject: { username: string, room: string }) => {
+  const socket = useContext(SocketContext);
   const [currentMessage, setCurrentMessage] = useState("");
-
-  const sendMessage = async () => {
-    if (currentMessage !== "") {
-      await socket.send(
-        JSON.stringify({
-          room: chatObj.room,
-          type: 'sendmessage',
-          user: chatObj.username,
-          message: currentMessage,
-          time:
-            new Date(Date.now()).getHours() +
-            ":" +
-            new Date(Date.now()).getMinutes(),
-        })
-      );
-    }
-  };
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    socket.addEventListener("message", function (event: any) {
-      console.log("Message from server ", event.data);
+    socket.on("connect", (data: any) => {
+      console.log("Successfully Connected to the Server");
+    });
+
+    socket.on("message", (data: any) => {
+      console.log(data);
     });
   }, [socket]);
+
+  const sendMessage = () => {
+    const newMessage: object = {
+      "username": chatObject.username,
+      "message": currentMessage,
+      "room": chatObject.room
+    };
+
+    socket.emit("message", newMessage);
+    setError(null);
+    setCurrentMessage("");
+  };
+
 
   return (
     <div>
