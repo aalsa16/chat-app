@@ -1,11 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { SocketContext } from "../socket"
-
-const createId = () => {
-  var id = "id" + Math.random().toString(16).slice(2)
-
-  return id;
-}
+import ScrollToBottom from "react-scroll-to-bottom";
 
 const Chat = (chatObject: { username: string, room: string }) => {
   const socket = useContext(SocketContext);
