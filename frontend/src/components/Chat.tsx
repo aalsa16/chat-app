@@ -1,55 +1,77 @@
 import React, { useState, useEffect, useContext } from "react";
 import { SocketContext } from "../socket"
+// @ts-ignore
 import ScrollToBottom from "react-scroll-to-bottom";
+import { createToast } from ".././utils/toast";
 
-const Chat = (chatObject: { username: string, room: string }) => {
+const createId = (): number => {
+  return Math.random() * Math.random();
+};
+
+const Chat = (chat: { username: string, room: string }): any => {
   const socket = useContext(SocketContext);
   const [currentMessage, setCurrentMessage] = useState("");
-  const [messageList, setMessageList] = useState([""]);
-  const [error, setError] = useState(null);
+  const [messageList, setMessageList] = useState([]);
 
-  useEffect(() => {
-    socket.on("message", (data: any) => {
-      setMessageList((list: any) => [...list, data]);
-    });
-  }, [socket]);
-
-  const sendMessage = async (): Promise<void> => {
+  const sendMessage = async () => {
     if (currentMessage !== "") {
-      const newMessage: object = {
-        username: chatObject.username,
+      const messageData: any = {
+        room: chat.room,
+        author: chat.username,
         message: currentMessage,
-        room: chatObject.room,
-        time: `${new Date(Date.now()).getHours()}:${new Date(Date.now()).getMinutes()}`
+        time:
+          new Date(Date.now()).getHours() +
+          ":" +
+          new Date(Date.now()).getMinutes(),
       };
 
-      await socket.emit("message", newMessage);
-      setError(null);
+      await socket.emit("message", messageData);
+
       setCurrentMessage("");
     }
   };
 
+  const leave_room = async () => {
+    await socket.emit('leave', { "username": chat.username, "room": chat.room });
+    window.location.reload();
+  };
+
+  useEffect(() => {
+    socket.on("message", (data: any) => {
+        if (data.type) {
+          if (data.username !== chat.username) {
+            createToast('info', data.message);
+          }
+        } else {
+          // @ts-ignore
+          setMessageList((list: any) => [...list, data]);
+        }
+    });
+  }, [socket]);
 
   return (
     <div className="chat-window">
-      <div className="chat-header">
-        <p>Live Chat</p>
-      </div>
+      <button id="leave-room" onClick={leave_room}>Back</button>
       <div className="chat-body">
         <ScrollToBottom className="message-container">
-          {messageList.map((messageContent) => {
+          {messageList.map((messageContent: {
+            author: string;
+            message: string;
+            time: string;
+          }) => {
             return (
               <div
                 className="message"
-                id={username === messageContent.author ? "you" : "other"}
+                id={chat.username === messageContent.author ? "you" : "other"}
+                key={createId()}
               >
                 <div>
                   <div className="message-content">
                     <p>{messageContent.message}</p>
                   </div>
                   <div className="message-meta">
-                    <p id="time">{messageContent.time}</p>
-                    <p id="author">{messageContent.author}</p>
+                    <p id="time" key={createId()}>{messageContent.time}</p>
+                    <p id="author" key={createId()}>{messageContent.author}</p>
                   </div>
                 </div>
               </div>
@@ -69,10 +91,10 @@ const Chat = (chatObject: { username: string, room: string }) => {
             event.key === "Enter" && sendMessage();
           }}
         />
-        <button onClick={sendMessage}>&#9658;</button>
+        <button onClick={sendMessage}>Send</button>
       </div>
     </div>
   );
-};
+}
 
 export default Chat;

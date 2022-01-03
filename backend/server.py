@@ -11,20 +11,25 @@ def on_join(data):
     username = data['username']
     room = data['room']
     join_room(room)
-    send(username + ' has entered the room.', to=room)
+
+    send({ "message": f"{username} has joined the room.", "type": "join", "username": username }, to=room)
 
 @socketio.on('leave')
 def on_leave(data):
     username = data['username']
     room = data['room']
     leave_room(room)
-    send(username + ' has left the room.', to=room)
+
+    send({ "message": f"{username} has left the room.", "type": "leave", "username": username }, to=room)
 
 @socketio.on('message')
 def handle_message(data):
     message = data['message']
     room = data['room']
-    emit('message', message, room=room)
+    author = data['author']
+    time = data['time']
+
+    emit('message', { "message": message, "room": room, "author": author, "time": time }, room=room)
 
 if __name__ == "__main__":
     socketio.run(app, debug=True, port=3333)
