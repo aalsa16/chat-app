@@ -55,8 +55,8 @@ body {
 }
 
 .chat-window {
-  width: 750px;
-  height: 420px;
+  width: 1000px;
+  height: 200px;
 }
 
 .chat-window p {
@@ -72,7 +72,7 @@ body {
 }
 
 .chat-window .chat-body {
-  height: calc(450px - (45px + 70px));
+  height: calc(700px - (45px + 70px));
 
   position: relative;
 }
@@ -187,7 +187,6 @@ body {
 #leave-room {
   left: 360px;
   bottom: 640px;
-  position: fixed;
   height: 50px;
   border-radius: 5px;
   background: rgba(255, 255, 255,0);
@@ -198,4 +197,7 @@ body {
   cursor:pointer;
   overflow: hidden;
   outline: none;
+  position: absolute;
+  top:0;
+  left:0;
 }
