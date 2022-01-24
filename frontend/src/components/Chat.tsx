@@ -14,7 +14,7 @@ const Chat = (chat: { username: string, room: string }): any => {
   const [messageList, setMessageList] = useState([]);
 
   const sendMessage = async () => {
-    if (currentMessage !== "") {
+    if (currentMessage.length !== 0) {
       const messageData: any = {
         room: chat.room,
         author: chat.username,

@@ -41,6 +41,8 @@ function App() {
     }
   };
 
+  console.log(show, showAI);
+
   return (
     <div className="App">
       { !show && !showAI ? (
@@ -53,10 +55,18 @@ function App() {
         </div>
       ) : showAI && !show ? (
         <AIchat username={username} />
-      ) : (
+      ) : !showAI && show ? (
         <SocketContext.Provider value={socket} >
           <Chat username={username} room={room} />
         </SocketContext.Provider>
+      ) : (
+        <div className="container"> 
+          <h3>Join a chat</h3>
+          <input type="text" placeholder="Enter username" onChange={(event) => {setUsername(event.target.value)}} style={{ textAlign: "center" }} />
+          <input type="text" placeholder="Enter room ID" onChange={(event) => {setRoom(event.target.value)}} style={{ textAlign: "center" }} />
+          <button onClick={joinRoom}>Join room</button>
+          <button onClick={joinAI}>Chat with an AI</button>
+        </div>
       ) }
 
       <ToastContainer
