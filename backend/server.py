@@ -32,4 +32,5 @@ def handle_message(data):
     emit('message', { "message": message, "room": room, "author": author, "time": time }, room=room)
 
 if __name__ == "__main__":
+    print("Server running")
     socketio.run(app, debug=True, port=3333)
