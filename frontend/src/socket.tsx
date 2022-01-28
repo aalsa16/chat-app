@@ -1,7 +1,7 @@
 import React from "react";
 import socketio from "socket.io-client";
 
-const SOCKET_URL = "ws://34.205.19.29:3333";
+const SOCKET_URL = "ws://127.0.0.1:3333";
 
 // @ts-ignore
 export const socket = socketio.connect(SOCKET_URL);
